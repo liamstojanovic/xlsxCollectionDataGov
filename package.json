@@ -7,5 +7,9 @@
     "test": "jest"
   },
   "author": "Liam Stojanovic",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.23.0",
+    "node-fetch": "^3.0.0"
+  }
 }
