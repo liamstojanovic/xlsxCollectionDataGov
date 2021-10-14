@@ -1,0 +1,11 @@
+{
+  "name": "xlsxcollectiondatagov",
+  "version": "1.0.0",
+  "description": "A collection of excel spreadsheets extracted from data.gov",
+  "main": "./src/app.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Liam Stojanovic",
+  "license": "ISC"
+}
