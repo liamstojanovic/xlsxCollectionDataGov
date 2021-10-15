@@ -2,7 +2,7 @@ class Data {
     constructor(dataArr) {
         this.unparsedData = dataArr
     }
-
+    
 
     getXlsUrls () {
         var urls = []
@@ -10,7 +10,10 @@ class Data {
             for (let results of this.unparsedData[i].result.results) {
                 for (let resources of results.resources) {
                     if (resources.format == 'XLS') {
-                        urls.push(resources.url)
+                        var extension = resources.url.slice(-4).toLowerCase()
+                        if (extension == 'xlsx' || extension == '.xls' && resources.url !== null) { // Ensure file extension matches one of these two.
+                            urls.push(resources.url)
+                        }
                     }
                 }
             }
