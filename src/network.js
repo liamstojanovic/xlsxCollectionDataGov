@@ -1,7 +1,7 @@
 const dataGovApi = require('./shared/dataGov')
 const axios = require('axios').default;
-const http = require('http')
-const https = require('https')
+// const http = require('http')
+// const https = require('https')
 const fs = require('fs')
 
 /**
@@ -67,25 +67,20 @@ async function generateApiRequests(term) {
     }
 }
 
-function downloadFile(urls) {
+async function downloadFile(urls) { // need to fix this
     var filterFileName = /[^/\\&\?]+\.\w{3,4}(?=([\?&].*$|$))/
-    for (const [index, value] of urls.entries()) {
+    for await (const [index, value] of urls.entries()) {
         var protocol = value.slice(4)
         var percentComplete = Math.round((index / urls.length) * 100)
-        const file = fs.createWriteStream(`./collection/${value.match(filterFileName)}`)
-        if (protocol == 'https') {
-            const request = https.get(value, function(response) {
-                console.log(`Downloading XLSX/XLS files, ${percentComplete}% complete. (${index}/${urls.length})`)
-                response.pipe(file)
-                
-            })
-        }
-        if (protocol == 'http:')
-        const request = http.get(value, function(response) {
-            console.log(`Downloading XLSX/XLS files, ${percentComplete}% complete. (${index}/${urls.length})`)
-            response.pipe(file)
-            
-        })
+        // const file = fs.createWriteStream(`./collection/${value.match(filterFileName)}`)
+        axios({
+            method: "get",
+            url: value,
+            responseType: "stream"
+        }).then(function (response) {
+            response.data.pipe(fs.createWriteStream(`./collection/${value.match(filterFileName)}`));
+        });
+
     }
     console.log(`Finished downloading ` + urls.length + ` files.`)
 }
