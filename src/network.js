@@ -1,5 +1,8 @@
 const dataGovApi = require('./shared/dataGov')
 const axios = require('axios').default;
+const http = require('http')
+const https = require('https')
+const fs = require('fs')
 
 /**
  * Tests the catalog.data.gov api
@@ -64,8 +67,32 @@ async function generateApiRequests(term) {
     }
 }
 
+function downloadFile(urls) {
+    var filterFileName = /[^/\\&\?]+\.\w{3,4}(?=([\?&].*$|$))/
+    for (const [index, value] of urls.entries()) {
+        var protocol = value.slice(4)
+        var percentComplete = Math.round((index / urls.length) * 100)
+        const file = fs.createWriteStream(`./collection/${value.match(filterFileName)}`)
+        if (protocol == 'https') {
+            const request = https.get(value, function(response) {
+                console.log(`Downloading XLSX/XLS files, ${percentComplete}% complete. (${index}/${urls.length})`)
+                response.pipe(file)
+                
+            })
+        }
+        if (protocol == 'http:')
+        const request = http.get(value, function(response) {
+            console.log(`Downloading XLSX/XLS files, ${percentComplete}% complete. (${index}/${urls.length})`)
+            response.pipe(file)
+            
+        })
+    }
+    console.log(`Finished downloading ` + urls.length + ` files.`)
+}
+
 module.exports = {
-    retrieveResults
+    retrieveResults,
+    downloadFile
 }
 
 // retrieveResults('EXCEL')
