@@ -29,9 +29,9 @@ async function retrieveResults (searchTerm) {
         var requests = await generateApiRequests(searchTerm)
         const totalRequests = requests.length
         for await (const [index, value] of requests.entries()) {
-            console.log(`Fetching remote resource from catalog.data.gov, ${(index / totalRequests) * 100}% complete (${index}/${totalRequests}) `)
+            console.log(`Fetching remote resource from catalog.data.gov, ${Math.round((index / totalRequests) * 100)}% complete (${index}/${totalRequests}) `)
             var response = await axios.get(value)
-            results.push(response)
+            results.push(response.data)
         }
         console.log(`Fetched all remote resources, 100% complete (${totalRequests}/${totalRequests})`)
         return results
@@ -64,4 +64,9 @@ async function generateApiRequests(term) {
     }
 }
 
-retrieveResults('EXCEL')
+module.exports = {
+    retrieveResults
+}
+
+// retrieveResults('EXCEL')
+
