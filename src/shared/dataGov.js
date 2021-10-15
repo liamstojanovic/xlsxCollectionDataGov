@@ -23,8 +23,10 @@ const paths = {
     resource_show: "/action/resource_show",
     related_list: "/action/related_list"
 }
+const MAXROWS = 1000
 
 module.exports = {
     baseUrl,
-    paths
+    paths,
+    MAXROWS
 }
