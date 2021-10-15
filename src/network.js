@@ -10,8 +10,20 @@ async function testApi () {
         }
     } catch(err) {
         console.log('Error connecting to data.gov api')
+        console.log(err)
     }
 
 }
 
-testApi()
+async function searchPackages (searchTerm) {
+    try {
+        var response = await axios.get(dataGovApi.baseUrl + dataGovApi.paths.package_search + `?q=${searchTerm}`)
+        var resultCount = await response.data.result.count
+        console.log(response.data.result)
+    } catch(err) {
+        console.log('Error connecitng to data.gov API')
+        console.log(err)
+    }
+}
+
+searchPackages('EXCEL')
