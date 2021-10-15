@@ -1,5 +1,7 @@
 This is a collection of XLSX files extracted from data.gov, as well as a utility to extract the files yourself.
 
+Usage: node ./src/app.js
+
 Network.js: Constructs API calls, fetches all possible results
 
 Data.js: A class to manage the API data
