@@ -3,6 +3,7 @@ const axios = require('axios').default;
 // const http = require('http')
 // const https = require('https')
 const fs = require('fs')
+const Path = require('path')
 
 /**
  * Tests the catalog.data.gov api
@@ -69,20 +70,38 @@ async function generateApiRequests(term) {
 
 async function downloadFile(urls) { // need to fix this
     var filterFileName = /[^/\\&\?]+\.\w{3,4}(?=([\?&].*$|$))/
-    for await (const [index, value] of urls.entries()) {
-        var protocol = value.slice(4)
+    var promises = []
+    for (const [index, value] of urls.entries()) {
+        // var protocol = value.slice(4)
         var percentComplete = Math.round((index / urls.length) * 100)
+        console.log(`${percentComplete}% complete. (${index}/${urls.length})`)
+        const path = Path.resolve('collection', value.match(filterFileName)[0])
+        try {
+            const response = await axios({
+                method: 'GET',
+                url: value,
+                responseType: 'stream'
+            })
+            response.data.pipe(fs.createWriteStream(path))
+            const downloadStatus = new Promise((resolve, reject) => {
+                response.data.on('end', () => {
+                    resolve()
+                })
+    
+                response.data.on('error', () => {
+                    reject()
+                })
+            })
+            promises.push(downloadStatus)
+        } catch(err) {
+            console.log('Could not fetch file from URL ' + value)
+        }
+
         // const file = fs.createWriteStream(`./collection/${value.match(filterFileName)}`)
-        axios({
-            method: "get",
-            url: value,
-            responseType: "stream"
-        }).then(function (response) {
-            response.data.pipe(fs.createWriteStream(`./collection/${value.match(filterFileName)}`));
-        });
 
     }
     console.log(`Finished downloading ` + urls.length + ` files.`)
+    return promises
 }
 
 module.exports = {
