@@ -11,7 +11,7 @@ class Data {
                 for (let resources of results.resources) {
                     if (resources.format == 'XLS') {
                         var extension = resources.url.slice(-4).toLowerCase()
-                        if (extension == 'xlsx' || extension == '.xls' && resources.url !== null) { // Ensure file extension matches one of these two.
+                        if (extension == 'xlsx' || extension == '.xls' && resources.url !== null) { // Ensure file extension matches one of these two strings and url !== null
                             urls.push(resources.url)
                         }
                     }
