@@ -1,7 +1,5 @@
 const dataGovApi = require('./shared/dataGov')
 const axios = require('axios').default;
-// const http = require('http')
-// const https = require('https')
 const fs = require('fs')
 const Path = require('path')
 
@@ -68,7 +66,7 @@ async function generateApiRequests(term) {
     }
 }
 
-async function downloadFile(urls) { // need to fix this
+async function downloadFile(urls) { 
     var filterFileName = /[^/\\&\?]+\.\w{3,4}(?=([\?&].*$|$))/
     var promises = []
     for (const [index, value] of urls.entries()) {
