@@ -66,15 +66,16 @@ async function generateApiRequests(term) {
     }
 }
 
-async function downloadFile(urls) { 
+async function downloadFile(urls) {
+    var failedFiles = 0
     var filterFileName = /[^/\\&\?]+\.\w{3,4}(?=([\?&].*$|$))/
     var promises = []
     for (const [index, value] of urls.entries()) {
         // var protocol = value.slice(4)
-        var percentComplete = Math.round((index / urls.length) * 100)
-        console.log(`${percentComplete}% complete. (${index}/${urls.length})`)
-        const path = Path.resolve('collection', value.match(filterFileName)[0])
+        var percentComplete = Math.round(((index - failedFiles) / urls.length) * 100)
+        console.log(`${percentComplete}% complete. (${index - failedFiles}/${urls.length})`)
         try {
+            const path = Path.resolve('collection', value.match(filterFileName)[0])
             const response = await axios({
                 method: 'GET',
                 url: value,
@@ -93,12 +94,14 @@ async function downloadFile(urls) {
             promises.push(downloadStatus)
         } catch(err) {
             console.log('Could not fetch file from URL ' + value)
+            failedFiles += 1
         }
 
         // const file = fs.createWriteStream(`./collection/${value.match(filterFileName)}`)
 
     }
     console.log(`Finished downloading ` + urls.length + ` files.`)
+    console.log(`Failed to download ${failedFiles} out of ${urls.length}`)
     return promises
 }
 
